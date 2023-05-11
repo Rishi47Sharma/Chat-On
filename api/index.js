@@ -57,7 +57,7 @@ app.get('/messages/:userId', async (req,res) => {
   
 }) ;
 
-app.get('/profile',(req,res)=>{
+app.get('/api/profile',(req,res)=>{
     const token= req.cookies?.token;
     if(token){
         jwt.verify(token,jwtSecret,{sameSite:'none',secure:true},(err,userData)=>{
@@ -70,7 +70,7 @@ app.get('/profile',(req,res)=>{
    
 
 })
-app.post('/login', async (req,res) => {
+app.post('/api/login', async (req,res) => {
     const {username, password} = req.body;
     const foundUser = await User.findOne({username});
    
@@ -93,7 +93,7 @@ app.post('/login', async (req,res) => {
     }
   });
 
-app.post('/register', async(req,res)=>{
+app.post('/api/register', async(req,res)=>{
     const {username , password}=req.body;
     const createdUser = await User.create({username,password});
    jwt.sign({userId:createdUser._id,username},jwtSecret,{},(err,token)=>{
