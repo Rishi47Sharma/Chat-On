@@ -57,30 +57,33 @@ app.get('/messages/:userId', async (req,res) => {
   
 }) ;
 
-app.get('/api/profile',(req,res)=>{
-    const token= req.cookies?.token;
-    if(token){
-        jwt.verify(token,jwtSecret,{sameSite:'none',secure:true},(err,userData)=>{
-            if (err) throw err;
-            res.json(userData)
-        })
-    }else{
-        res.status(401).json("no token")
-    }
-   
-
-})
-app.post('/api/login', async (req,res) => {
+app.get('/profile', (req,res) => {
+  const token = req.cookies?.token;
+  if (token) {
+    jwt.verify(token, jwtSecret, {}, (err, userData) => {
+      if (err) throw err;
+      res.json(userData);
+    });
+  } else {
+    res.status(401).json('no token');
+  }
+});
+app.post('/login', async (req,res) => {
     const {username, password} = req.body;
+    
+    
     const foundUser = await User.findOne({username});
    
     if (foundUser) {
       const passOk = foundUser.password === password ? true:false
+      console.log(passOk)
     
 
       if (passOk) {
         jwt.sign({userId:foundUser._id,username}, jwtSecret, {}, (err, token) => {
-          res.cookie('rishi', token, {sameSite:'none', secure:true}).json({
+          console.log(token)
+          if(err)  throw err
+          res.cookie('token', token, {sameSite:'none', secure:true}).status(201).json({
             id: foundUser._id,
             
           });
@@ -91,10 +94,12 @@ app.post('/api/login', async (req,res) => {
      
       
     }
+  
   });
 
-app.post('/api/register', async(req,res)=>{
+app.post('/register', async(req,res)=>{
     const {username , password}=req.body;
+     
     const createdUser = await User.create({username,password});
    jwt.sign({userId:createdUser._id,username},jwtSecret,{},(err,token)=>{
   if(err) throw err;
@@ -117,9 +122,11 @@ const wss = new ws.WebSocketServer({server})
 
 wss.on('connection',(connection, req)=>{
 
+  
 
  
   const cookies = req?.headers?.cookie
+  
   if(cookies){
     const tokenCookies=cookies.split(';').find(srt => srt.startsWith('token='))
    
@@ -128,6 +135,7 @@ wss.on('connection',(connection, req)=>{
       
       if(token){
         jwt.verify(token,jwtSecret,{},(err,userData)=>{
+          if (err) throw err;
           const {userId,username}=userData
           
 
@@ -138,7 +146,7 @@ wss.on('connection',(connection, req)=>{
         })
       }
     }
-   
+   console.log([...wss.clients])
    
 
   }

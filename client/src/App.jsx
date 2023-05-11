@@ -7,7 +7,7 @@ import { UserContextProvider } from './UserContext';
 import Routes from './Routes';
 
 function App() {
- axios.defaults.baseURL=import.meta.env.VITE_API_BASE_URL;
+ axios.defaults.baseURL='http://localhost:4000';
  axios.defaults.withCredentials=true;
 
   return (

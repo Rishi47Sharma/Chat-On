@@ -20,22 +20,14 @@ function Chat() {
 
 
 // Automaticaly reconnect webSocket to  server 
-    useEffect(() => {
-      connectToWs();
-    }, []);
-    function connectToWs() {
-      const ws = new WebSocket('ws://localhost:4000');
-      setWs(ws);
-      ws.addEventListener('message', handleMessage);
-      ws.addEventListener('close', () => {
-        setTimeout(() => {
-          console.log('Disconnected. Trying to reconnect.');
-          connectToWs();
-        }, 1000);
-      });
-    }
+useEffect(() => {
+  const ws = new WebSocket('ws://localhost:4000');
+  setWs(ws);
+  ws.addEventListener('message', handleMessage);
+}, []);
 
-    useEffect(()=>{
+
+ useEffect(()=>{
         if(selectedUser){
           
           axios.get(`/messages/${selectedUser}`).then(

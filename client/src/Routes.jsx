@@ -5,8 +5,15 @@ import Chat from "./Chat";
 
 export default function Routes(){
     const{username,id}=useContext(UserContext)
+
     if(username && typeof(id)=== 'string'){
-        return (<Chat/>)
-    }
-    return(<Register/>)
+      return (<Chat/>)
+  }
+    
+
+    console.log(username ,id)
+    return(
+    
+   
+    <Register/>)
 }
